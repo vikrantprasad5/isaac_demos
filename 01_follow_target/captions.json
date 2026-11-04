@@ -1,0 +1,12 @@
+{
+  "badge": "Topic 3 · Robot Kinematics  |  Franka Panda · 7 joints",
+  "captions": [
+    {"start": 0.3, "end": 3.6, "title": "Inverse Kinematics", "body": "Goal: keep the gripper on the red cube"},
+    {"start": 3.8, "end": 11.0, "title": "We only say WHERE the hand should go", "body": "The robot works out all 7 joint angles by itself"},
+    {"start": 11.2, "end": 17.8, "title": "Inverse kinematics (IK)", "body": "Hand position → joint angles, recomputed 60 times a second"},
+    {"start": 18.0, "end": 24.2, "title": "Many ways to reach one point", "body": "Several arm poses reach the same spot. The solver picks a smooth, safe one."},
+    {"start": 24.6, "end": 29.8, "title": "Leaving the workspace", "body": "The target moves beyond the arm's reach (about 0.85 m)"},
+    {"start": 30.0, "end": 35.2, "title": "Out of reach", "body": "The arm stretches fully and stops: no joint angles can reach the target"},
+    {"start": 35.6, "end": 41.8, "title": "Back within reach", "body": "Tracking resumes straight away"}
+  ]
+}
