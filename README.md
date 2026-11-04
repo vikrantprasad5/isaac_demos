@@ -28,3 +28,26 @@ python3 common/annotate.py 01_follow_target/captions.json videos/raw/01_follow_t
 ```
 
 `run.sh` strips conda from the environment before calling `~/isaacsim/python.sh`.
+
+## Slides
+
+One PowerPoint deck per topic, each with the captioned video embedded, screenshots and speaker notes (the talking points live in the notes):
+
+| Topic | Deck |
+|---|---|
+| 3 Kinematics | [slides/Topic03_Kinematics.pptx](slides/Topic03_Kinematics.pptx) |
+| 7 Collision & planning | [slides/Topic07_Collision_Planning.pptx](slides/Topic07_Collision_Planning.pptx) |
+| 9 Contact & friction | [slides/Topic09_Contact_Friction.pptx](slides/Topic09_Contact_Friction.pptx) |
+| 14 Learned policies | [slides/Topic14_Learned_Policies.pptx](slides/Topic14_Learned_Policies.pptx) |
+
+Rebuild with `node slides/build_decks.js` (needs pptxgenjs, react-icons, react, react-dom, sharp on NODE_PATH and APPLY_THEME pointing at the pptx skill's apply_theme.js).
+
+Photo credits (Wikimedia Commons, also credited on each slide):
+- BMW Leipzig MEDIA 050719 Download Karosseriebau max.jpg: BMW Werk Leipzig, CC BY-SA 2.0 de (https://commons.wikimedia.org/wiki/File:BMW_Leipzig_MEDIA_050719_Download_Karosseriebau_max.jpg)
+- WBAMC first in DoD to use robot for surgery 160426-A-EK666-506.jpg: Marcy Sanchez, Public domain (https://commons.wikimedia.org/wiki/File:WBAMC_first_in_DoD_to_use_robot_for_surgery_160426-A-EK666-506.jpg)
+- Hedge maze - Nokkakivi.jpg: Juustila, CC BY-SA 4.0 (https://commons.wikimedia.org/wiki/File:Hedge_maze_-_Nokkakivi.jpg)
+- Amazon warehouse robot 2020.JPG: Geni, CC BY-SA 4.0 (https://commons.wikimedia.org/wiki/File:Amazon_warehouse_robot_2020.JPG)
+- Human-Robot-Collaboration-Sawing-2016-Luka-Peternel.jpg: Luka Peternel, CC BY-SA 4.0 (https://commons.wikimedia.org/wiki/File:Human-Robot-Collaboration-Sawing-2016-Luka-Peternel.jpg)
+- Shadow Hand Bulb large.jpg: Richard Greenhill and Hugo Elias (myself) of the Shadow Robo, CC BY-SA 3.0 (https://commons.wikimedia.org/wiki/File:Shadow_Hand_Bulb_large.jpg)
+- Humanoid robot at Science Square Tsukuba.jpg: Syced, CC0 (https://commons.wikimedia.org/wiki/File:Humanoid_robot_at_Science_Square_Tsukuba.jpg)
+- Chinese Crested hairless agility.jpg: Ron Armstrong from Helena, MT, USA, CC BY 2.0 (https://commons.wikimedia.org/wiki/File:Chinese_Crested_hairless_agility.jpg)
