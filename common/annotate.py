@@ -6,7 +6,7 @@ ffmpeg, fading in and out. Usage:
     python3 common/annotate.py 01_follow_target/captions.json videos/01_follow_target.mp4 videos/01_follow_target_captioned.mp4
 
 captions.json:
-    {"badge": "Topic 3 - Robot Kinematics",
+    {"badge": "Topic 3 - Robot Kinematics", "position": "bottom",  # or "top"
      "captions": [{"start": 0, "end": 3.5, "title": "...", "body": "..."}, ...]}
 """
 
@@ -39,7 +39,7 @@ def wrap(draw, text, font, max_width):
     return lines
 
 
-def caption_card(title, body, path):
+def caption_card(title, body, path, position="bottom"):
     """Lower-third card: accent bar, bold title, wrapped body text."""
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -52,8 +52,13 @@ def caption_card(title, body, path):
     box_h = pad * 2 + title_h + (14 + body_h if body_lines else 0)
     text_w = max([draw.textlength(title, font=title_font)] + [draw.textlength(l, font=body_font) for l in body_lines])
     box_w = int(text_w) + pad * 2 + 14
-    x0, y1 = margin, H - margin
-    y0 = y1 - box_h
+    x0 = margin
+    if position == "top":
+        y0 = 130
+        y1 = y0 + box_h
+    else:
+        y1 = H - margin
+        y0 = y1 - box_h
     draw.rounded_rectangle((x0, y0, x0 + box_w, y1), radius=18, fill=(10, 14, 22, 200))
     draw.rounded_rectangle((x0, y0, x0 + 10, y1), radius=5, fill=ACCENT)
     tx = x0 + pad + 14
@@ -88,7 +93,7 @@ def main(spec_path, in_mp4, out_mp4):
         cards.append((path, 0.0, None))
     for i, cap in enumerate(spec["captions"]):
         path = os.path.join(tmp, f"cap{i:02d}.png")
-        caption_card(cap["title"], cap.get("body", ""), path)
+        caption_card(cap["title"], cap.get("body", ""), path, spec.get("position", "bottom"))
         cards.append((path, float(cap["start"]), float(cap["end"])))
 
     for i, (path, start, end) in enumerate(cards, start=1):

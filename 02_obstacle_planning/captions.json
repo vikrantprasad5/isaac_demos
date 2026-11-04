@@ -1,0 +1,11 @@
+{
+  "badge": "Topic 7 · Collision Checking & Motion Planning",
+  "position": "top",
+  "captions": [
+    {"start": 0.3, "end": 3.6, "title": "Moving without collisions", "body": "Task: move the red cube onto the green pad"},
+    {"start": 3.8, "end": 10.6, "title": "No obstacle", "body": "Blue dots trace the gripper while it carries the cube: a low, direct path"},
+    {"start": 11.0, "end": 15.4, "title": "Now add a wall", "body": "The robot knows the wall's shape and checks every move for collisions"},
+    {"start": 15.6, "end": 20.4, "title": "A new path", "body": "The yellow path lifts the cube up and over the wall"},
+    {"start": 20.6, "end": 23.8, "title": "Same task, different route", "body": "Collision checking changes HOW the robot moves, not WHAT it does"}
+  ]
+}
