@@ -8,6 +8,7 @@ Recorded Isaac Sim 6.2.0 demo videos for "Talk 03: Manipulation and Contact".
 |---|---|---|
 | 1 | Follow target: [edited](videos/edited/01_follow_target.mp4) · [raw](videos/raw/01_follow_target.mp4) | Robot kinematics: inverse kinematics, reachability |
 | 2 | Obstacle planning: [edited](videos/edited/02_obstacle_planning.mp4) · raw [open](videos/raw/02_obstacle_open.mp4), [wall](videos/raw/02_obstacle_wall.mp4) | Collision checking and motion planning |
+| 3 | Friction slip: [edited](videos/edited/03_friction_slip.mp4) · raw [grip](videos/raw/03_friction_grip.mp4), [slip](videos/raw/03_friction_slip.mp4) | Contact mechanics and friction |
 
 ## Re-recording
 

@@ -1,0 +1,11 @@
+{
+  "badge": "Topic 9 · Contact Mechanics & Friction",
+  "position": "top-right",
+  "captions": [
+    {"start": 0.3, "end": 3.0, "title": "Contact and friction", "body": "Same robot, same squeeze, same motion. Only the cube's surface changes."},
+    {"start": 3.2, "end": 10.5, "title": "High friction (μ = 1.0)", "body": "Friction between fingers and cube holds its weight: carried and placed"},
+    {"start": 11.0, "end": 15.0, "title": "Lower friction (μ = 0.3)", "body": "Think of a wet or oily surface, gripped with the same force"},
+    {"start": 15.2, "end": 21.4, "title": "Slip!", "body": "Friction can't hold the weight on the move: the cube slides out and drops"},
+    {"start": 21.9, "end": 25.8, "title": "Slow motion", "body": "To hold an object, grip force × friction must beat its weight and motion"}
+  ]
+}
