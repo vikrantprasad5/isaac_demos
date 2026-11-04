@@ -6,7 +6,7 @@ ffmpeg, fading in and out. Usage:
     python3 common/annotate.py 01_follow_target/captions.json videos/01_follow_target.mp4 videos/01_follow_target_captioned.mp4
 
 captions.json:
-    {"badge": "Topic 3 - Robot Kinematics", "position": "bottom",  # or "top", "top-right"
+    {"badge": "Topic 3 - Robot Kinematics", "position": "bottom",  # or "top", "top-right", "bottom-right"
      "captions": [{"start": 0, "end": 3.5, "title": "...", "body": "..."}, ...]}
 """
 
@@ -57,6 +57,10 @@ def caption_card(title, body, path, position="bottom"):
         x0 = W - margin - box_w
         y0 = 130
         y1 = y0 + box_h
+    elif position == "bottom-right":
+        x0 = W - margin - box_w
+        y1 = H - margin
+        y0 = y1 - box_h
     elif position == "top":
         y0 = 130
         y1 = y0 + box_h

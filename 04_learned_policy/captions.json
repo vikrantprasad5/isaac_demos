@@ -1,0 +1,10 @@
+{
+  "badge": "Topic 14 · Learning Manipulation Policies",
+  "position": "bottom-right",
+  "captions": [
+    {"start": 0.2, "end": 2.4, "title": "Learned, not programmed", "body": "A neural network controls the arm. Nobody wrote the steps."},
+    {"start": 2.6, "end": 5.4, "title": "Slow motion (4×)", "body": "Reach the handle, grip it, pull"},
+    {"start": 5.6, "end": 8.4, "title": "Reinforcement learning", "body": "Trained in simulation over thousands of tries, rewarded for opening the drawer"},
+    {"start": 8.6, "end": 10.0, "title": "Learning from data", "body": "Behavior cloning, VLA and diffusion policies build on the same idea"}
+  ]
+}
