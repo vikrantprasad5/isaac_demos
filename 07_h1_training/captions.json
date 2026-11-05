@@ -1,0 +1,16 @@
+{
+  "badge": "Topic 14 - Learned Policies",
+  "position": "bottom",
+  "captions": [
+    {"start": 0.0, "end": 3.9, "title": "Before training", "body": "The robot's brain is a random neural network: every robot falls at once"},
+    {"start": 4.0, "end": 8.9, "title": "Learning by trial and error", "body": "4096 robots practise at the same time. Falling costs points, walking earns them"},
+    {"start": 9.0, "end": 13.9, "title": "Every robot gets a different world", "body": "Icy to grippy floors, light to heavy bodies, random shoves"},
+    {"start": 14.0, "end": 18.9, "title": "Harder ground as it improves", "body": "Robots that walk well are moved to steeper stairs and rougher ground"},
+    {"start": 19.0, "end": 29.9, "title": "One brain for all terrain", "body": "It is never told what the ground is like, it adapts by feel"},
+    {"start": 30.0, "end": 35.9, "title": "Slippery floor", "body": "It practised on floors this slippery during training"},
+    {"start": 36.0, "end": 41.9, "title": "Heavy load", "body": "Trained with -5 to +15 kg extra, so it adjusts by itself"},
+    {"start": 42.0, "end": 48.9, "title": "Shoves", "body": "Random pushes in training taught it to catch its balance"},
+    {"start": 49.0, "end": 55.9, "title": "Everything at once", "body": "Training mixed these randomly, so it copes with combinations"},
+    {"start": 56.0, "end": 66.0, "title": "Stairs", "body": "Learned on the stair levels of the training ground"}
+  ]
+}

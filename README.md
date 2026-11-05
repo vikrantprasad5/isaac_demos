@@ -12,6 +12,7 @@ Recorded Isaac Sim 6.2.0 demo videos for "Talk 03: Manipulation and Contact".
 | 4 | Learned policy: [edited](videos/edited/04_learned_policy.mp4) · raw [real-time](videos/raw/04_drawer_policy_realtime.mp4), [slow-mo](videos/raw/04_drawer_policy_slowmo.mp4) | Learning manipulation policies (pre-trained RL drawer-opening policy) |
 | 5 | Hand grip and slip: [edited](videos/edited/05_hand_grasp.mp4) · [raw](videos/raw/05_hand_grasp.mp4) | Contact and friction with a five-finger Shadow Hand (scripted fingers; squeeze fades until the rod slips) |
 | 6 | Humanoid walking: [edited](videos/edited/06_humanoid_walk.mp4) · [raw](videos/raw/06_humanoid_walk.mp4) | Learned policies: pre-trained Unitree H2 walking policy (trained with domain randomization) |
+| 7 | Training a humanoid: [edited](videos/edited/07_h1_training.mp4) · [raw](videos/raw/07_h1_training.mp4) | Learned policies: our own Unitree H1 training run in Isaac Lab with domain randomization (montage from round 0 to 2000, then tests: slippery floor, +15 kg, shoves, all at once, stairs) |
 
 ## Re-recording
 
@@ -30,6 +31,21 @@ python3 common/annotate.py 01_follow_target/captions.json videos/raw/01_follow_t
 ```
 
 Video 5 records at 120 fps and is assembled (real time + 4x slow-motion replay + squeeze meter + captions) by `python3 05_hand_grasp/make_video.py`. Video 6 is encoded at 50 fps.
+
+### Video 7: training in Isaac Lab
+
+Isaac Lab 3.0 (`~/IsaacLab`, linked to `~/isaacsim`). `07_h1_training/install_task.sh` registers the task
+`Demo-Velocity-Rough-H1-DR` (H1 on rough terrain with wide randomization: friction 0.2-1.25, torso mass -5..+15 kg,
+shoves every 4-8 s up to 1.2 m/s). Training (4096 robots, 2000 rounds, ~33 min on an RTX 5070):
+
+```bash
+~/IsaacLab/nocondarun.sh -p scripts/reinforcement_learning/train.py --rl_library rsl_rl \
+    --task Demo-Velocity-Rough-H1-DR --num_envs 4096 --max_iterations 2000 --seed 7
+07_h1_training/record_all.sh <run_dir>   # replays checkpoints into 07_h1_training/clips/
+python3 07_h1_training/make_video.py     # montage + panels + captions
+```
+
+The final policy and its training config are in `07_h1_training/policy/`.
 
 `run.sh` strips conda from the environment before calling `~/isaacsim/python.sh`.
 
