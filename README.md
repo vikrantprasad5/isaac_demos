@@ -10,6 +10,8 @@ Recorded Isaac Sim 6.2.0 demo videos for "Talk 03: Manipulation and Contact".
 | 2 | Obstacle planning: [edited](videos/edited/02_obstacle_planning.mp4) · raw [open](videos/raw/02_obstacle_open.mp4), [wall](videos/raw/02_obstacle_wall.mp4) | Collision checking and motion planning |
 | 3 | Friction slip: [edited](videos/edited/03_friction_slip.mp4) · raw [grip](videos/raw/03_friction_grip.mp4), [slip](videos/raw/03_friction_slip.mp4) | Contact mechanics and friction |
 | 4 | Learned policy: [edited](videos/edited/04_learned_policy.mp4) · raw [real-time](videos/raw/04_drawer_policy_realtime.mp4), [slow-mo](videos/raw/04_drawer_policy_slowmo.mp4) | Learning manipulation policies (pre-trained RL drawer-opening policy) |
+| 5 | Hand grip and slip: [edited](videos/edited/05_hand_grasp.mp4) · [raw](videos/raw/05_hand_grasp.mp4) | Contact and friction with a five-finger Shadow Hand (scripted fingers; squeeze fades until the rod slips) |
+| 6 | Humanoid walking: [edited](videos/edited/06_humanoid_walk.mp4) · [raw](videos/raw/06_humanoid_walk.mp4) | Learned policies: pre-trained Unitree H2 walking policy (trained with domain randomization) |
 
 ## Re-recording
 
@@ -26,6 +28,8 @@ Add captions (needs Pillow):
 ```bash
 python3 common/annotate.py 01_follow_target/captions.json videos/raw/01_follow_target.mp4 videos/edited/01_follow_target.mp4
 ```
+
+Video 5 records at 120 fps and is assembled (real time + 4x slow-motion replay + squeeze meter + captions) by `python3 05_hand_grasp/make_video.py`. Video 6 is encoded at 50 fps.
 
 `run.sh` strips conda from the environment before calling `~/isaacsim/python.sh`.
 

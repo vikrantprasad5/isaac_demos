@@ -14,14 +14,14 @@ from omni.replicator.core.functional import write_image
 
 
 class Recorder:
-    def __init__(self, out_dir, position, look_at, resolution=(1920, 1080), focal_length=24.0):
+    def __init__(self, out_dir, position, look_at, resolution=(1920, 1080), focal_length=24.0, near_clip=1.0):
         self.frames_dir = os.path.join(out_dir, "frames")
         shutil.rmtree(self.frames_dir, ignore_errors=True)
         os.makedirs(self.frames_dir)
         rep.orchestrator.set_capture_on_play(False)
         carb.settings.get_settings().set("rtx/post/dlss/execMode", 2)
         self.camera = rep.functional.create.camera(
-            position=position, look_at=look_at, focal_length=focal_length, parent="/World", name="DemoCamera"
+            position=position, look_at=look_at, focal_length=focal_length, clipping_range=(near_clip, 1000000.0), parent="/World", name="DemoCamera"
         )
         self.render_product = rep.create.render_product(self.camera, resolution=resolution, name="DemoRP")
         self.rgb = rep.AnnotatorRegistry.get_annotator("rgb")

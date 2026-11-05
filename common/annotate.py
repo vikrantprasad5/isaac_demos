@@ -101,7 +101,7 @@ def main(spec_path, in_mp4, out_mp4):
         cards.append((path, 0.0, None))
     for i, cap in enumerate(spec["captions"]):
         path = os.path.join(tmp, f"cap{i:02d}.png")
-        caption_card(cap["title"], cap.get("body", ""), path, spec.get("position", "bottom"))
+        caption_card(cap["title"], cap.get("body", ""), path, cap.get("position", spec.get("position", "bottom")))
         cards.append((path, float(cap["start"]), float(cap["end"])))
 
     for i, (path, start, end) in enumerate(cards, start=1):

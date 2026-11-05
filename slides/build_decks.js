@@ -467,6 +467,24 @@ async function topic9() {
     slide.addNotes("Rough friction coefficients for intuition: ice is around 0.05, wet or oily surfaces around 0.3, dry wood about 0.5, rubber on a dry surface around 1. Our two demo takes sit at 0.3 and 1.0. Real values depend on both surfaces, so treat these as ballpark numbers.");
   }
 
+  await videoSlide(deck, {
+    section: "Demo", title: "Demo: a human-like hand, squeezing less", video: vid("05_hand_grasp.mp4"), cover: im("cover_05_hand_grasp.jpg"),
+    captions: [[0, "Five-finger Shadow Hand"], [1.7, "Fingers close on the rod"], [4.5, "Support removed"], [7.1, "Squeeze fades"], [10.7, "Starts to slide"], [14.5, "Slow-motion replay"]],
+    notes: "Same lesson, now with a human-like hand: the Shadow Hand, 24 joints. The finger motions are scripted, not AI. Once the stand drops away, only friction between fingers and rod holds the rod up. Then we slowly turn down how hard the finger motors may squeeze; the meter on the right shows it. The friction coefficient never changes. Friction grows with squeeze, so at about 1.4 percent of full squeeze, friction falls below the rod's weight and it slides down onto the stand. Behind the scenes: while the fingers close, the rod is made temporarily heavy so the fingers cannot knock it over; it gets its real weight, 250 grams, before the stand drops.",
+  });
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Demo" });
+    slide.addText("Same friction, less squeeze", { placeholder: "title" });
+    strip(deck, slide, [
+      { img: im("t5_00720.jpg"), label: "100%", sub: "Held", accent: C.accent4 },
+      { img: im("t5_01140.jpg"), label: "18%", sub: "Still held" },
+      { img: im("t5_01440.jpg"), label: "1.4%", sub: "Sliding", accent: C.accent6 },
+      { img: im("t5_01488.jpg"), label: "1%", sub: "Slipped", accent: C.accent3 },
+    ], { y: 1.55, h: 3.6 });
+    slide.addNotes("Squeeze is shown as a percentage of the hand's full grip. The robot hand is far stronger than this light rod needs, so it holds until the squeeze is almost gone. Then friction (mu times squeeze) drops below the weight and the rod slides. The topic 3 Franka demo changed friction; this one changes squeeze. Both are terms of the same equation.");
+  }
+
   pres.addSection({ title: "Wrap-up" });
   {
     const slide = pres.addSlide({ masterName: "Content Dark", sectionTitle: "Wrap-up" });
@@ -569,6 +587,30 @@ async function topic14() {
       { img: im("t4_00040.jpg"), label: "0.67 s", sub: "Drawer open" },
     ], { y: 1.55, h: 3.6 });
     slide.addNotes("Frames from the 60 fps recording. The policy discovered on its own that it should approach the handle, close the gripper, and pull straight back.");
+  }
+
+  await videoSlide(deck, {
+    section: "Demo", title: "Demo: the same idea, a whole humanoid", video: vid("06_humanoid_walk.mp4"), cover: im("cover_06_humanoid_walk.jpg"),
+    captions: [[0, "Unitree H2 humanoid"], [1.7, "Walk forward"], [6.5, "Turn around"], [9.7, "Walk back"], [14.7, "Step sideways"], [17.7, "Stop and balance"]],
+    notes: "Same recipe as the drawer, scaled up to a whole body. This is the Unitree H2 walking policy that ships with Isaac Sim, trained with reinforcement learning in Isaac Lab. We only send simple commands: walk forward at half a meter per second, turn, step sideways, stop. The neural network turns each command into joint targets 50 times a second and keeps the robot balanced. Every footstep is also a friction problem, which links back to topic 9.",
+  });
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Demo" });
+    slide.addText("Why it doesn't fall: domain randomization", { placeholder: "title" });
+    const cards = [
+      ["FaShoePrints", "Floor friction", "Slippery to grippy: μ 0.2 to 1.5"],
+      ["FaWeightHanging", "Body weight", "Up to 5 kg extra on the torso"],
+      ["FaCogs", "Motor strength", "Every motor a bit stronger or weaker"],
+      ["FaWind", "Random pushes", "Shoves of up to 10 N"],
+    ];
+    for (let i = 0; i < cards.length; i++) {
+      const [ic, t, sub] = cards[i];
+      await iconBox(deck, slide, { x: 0.6, y: 1.5 + i * 1.22, w: 7.4, h: 1.02, iconName: ic, title: t, sub });
+    }
+    pic(slide, im("t6_h2_side.jpg"), 8.4, 1.5, 4.33, 4.68, { objectName: "H2 walking" });
+    caption(slide, C, "Training changes the world every episode, so the policy can't rely on any one setting", 0.6, 6.35, 11);
+    slide.addNotes("These numbers come from the training configuration that ships with this H2 policy. During training, every simulated robot gets a different world: floor friction anywhere from 0.2 to 1.5, its torso 1 kg lighter to 5 kg heavier, body part masses and centers of mass shifted, motor gains and joint friction varied, and random pushes of up to 10 newtons. A policy that walks in all of those worlds is much more likely to work on a real robot, whose exact values we never know. That is how domain randomization helps close the sim-to-real gap.");
   }
 
   pres.addSection({ title: "Wrap-up" });

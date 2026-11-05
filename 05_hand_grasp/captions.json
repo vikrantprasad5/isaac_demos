@@ -1,0 +1,13 @@
+{
+  "badge": "Topic 9 - Contact and Friction",
+  "position": "bottom",
+  "captions": [
+    {"start": 0.0, "end": 1.6, "title": "A five-finger robot hand", "body": "Shadow Hand: 24 joints, built like a human hand"},
+    {"start": 1.7, "end": 4.4, "title": "Fingers close around the rod", "body": "Scripted finger motions, no AI here"},
+    {"start": 4.5, "end": 7.0, "title": "Take the support away", "body": "Now only the fingers hold the rod up"},
+    {"start": 7.1, "end": 10.6, "title": "Slowly relax the squeeze", "body": "Less squeeze means less friction"},
+    {"start": 10.7, "end": 12.1, "title": "Friction < weight", "body": "The rod starts to slide"},
+    {"start": 12.2, "end": 14.4, "title": "Slipped!", "body": "It slid down onto the stand"},
+    {"start": 14.5, "end": 17.9, "title": "Slow-motion replay", "body": "Grip = squeeze x friction"}
+  ]
+}

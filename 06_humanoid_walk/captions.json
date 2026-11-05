@@ -1,0 +1,12 @@
+{
+  "badge": "Topic 14 - Learned Policies",
+  "position": "bottom-right",
+  "captions": [
+    {"start": 0.0, "end": 1.6, "title": "Humanoid robot: Unitree H2", "body": "Its walking is controlled by one neural network"},
+    {"start": 1.7, "end": 6.4, "title": "Command: walk forward", "body": "The network picks new joint targets 50 times a second"},
+    {"start": 6.5, "end": 9.6, "title": "Command: turn around", "body": "Nobody wrote the steps for turning", "position": "bottom"},
+    {"start": 9.7, "end": 14.6, "title": "Command: walk back", "body": "Learned by trial and error in simulation"},
+    {"start": 14.7, "end": 17.6, "title": "Command: step sideways", "body": "Same network, different command"},
+    {"start": 17.7, "end": 19.6, "title": "Command: stop", "body": "It keeps its balance by itself"}
+  ]
+}
