@@ -2,3 +2,4 @@ frames/
 *.log
 __pycache__/
 07_h1_training/clips/
+_tts_*/

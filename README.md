@@ -2,7 +2,7 @@
 
 Recorded Isaac Sim 6.2.0 demo videos for "Talk 03: Manipulation and Contact".
 
-`videos/raw/` = clean renders, `videos/edited/` = same clips with captions.
+`videos/raw/` = clean renders, `videos/edited/` = same clips with captions. `videos/narrated/` = AI voice-over (offline Kokoro TTS) with word-timed captions in a band under the picture; the decks embed these for videos 8 and 9.
 
 | # | Video | Topic |
 |---|---|---|
@@ -13,6 +13,9 @@ Recorded Isaac Sim 6.2.0 demo videos for "Talk 03: Manipulation and Contact".
 | 5 | Hand grip and slip: [edited](videos/edited/05_hand_grasp.mp4) · [raw](videos/raw/05_hand_grasp.mp4) | Contact and friction with a five-finger Shadow Hand (scripted fingers; squeeze fades until the rod slips) |
 | 6 | Humanoid walking: [edited](videos/edited/06_humanoid_walk.mp4) · [raw](videos/raw/06_humanoid_walk.mp4) | Learned policies: pre-trained Unitree H2 walking policy (trained with domain randomization) |
 | 7 | Training a humanoid: [edited](videos/edited/07_h1_training.mp4) · [raw](videos/raw/07_h1_training.mp4) | Learned policies: our own Unitree H1 training run in Isaac Lab with domain randomization (montage from round 0 to 2000, then tests: slippery floor, +15 kg, shoves, all at once, stairs) |
+| 8a | Dynamics maths: [video](videos/edited/08a_dynamics_math.mp4) | Robot dynamics: animated explainer of M(q)q̈ + C(q,q̇)q̇ + g(q) = τ on a 2-link arm; forward dynamics (τ → motion, motors off) vs inverse dynamics (motion → τ, circle slow then 2× fast) |
+| 8b | Torque-controlled Franka: [edited](videos/edited/08b_dynamics_franka.mp4) · [raw](videos/raw/08b_dynamics_franka.mp4) | Robot dynamics in Isaac Sim: τ = 0 (falls), τ = g(q) (floats), computed torque (tracks a wave), with live torque plots |
+| 9 | Pushing on rough vs smooth: [edited](videos/edited/09_friction_push.mp4) · [raw](videos/raw/09_friction_push.mp4) | Friction: Franka pushes a 2 kg block on μ 1.0/0.6 vs 0.04/0.03 mats; measured push force ≈ 14.7 ± 1.8 N vs 0.7 ± 0.03 N |
 
 ## Re-recording
 
@@ -31,6 +34,22 @@ python3 common/annotate.py 01_follow_target/captions.json videos/raw/01_follow_t
 ```
 
 Video 5 records at 120 fps and is assembled (real time + 4x slow-motion replay + squeeze meter + captions) by `python3 05_hand_grasp/make_video.py`. Video 6 is encoded at 50 fps.
+
+### Videos 8 and 9: dynamics and friction push
+
+```bash
+./run.sh 08_dynamics/math_video.py                 # 8a, pure NumPy + matplotlib (--preview for stills)
+./run.sh 08_dynamics/record.py                     # 8b frames + data.json (torque control, 120 Hz)
+./run.sh 08_dynamics/make_video.py                 # 8b with equation/torque overlay
+./run.sh 09_friction_push/record.py --take rough   # frames + contact forces per physics step
+./run.sh 09_friction_push/record.py --take smooth
+./run.sh 09_friction_push/make_video.py            # side by side + live push-force plot
+./run.sh slides/make_dynamics_images.py            # stills, covers and equation PNGs for the decks
+```
+
+Voice-over: `python3 common/narrate.py <narration.json> <edited.mp4> videos/narrated/<name>.mp4` (scripts in
+`08_dynamics/narration_*.json`, `09_friction_push/narration.json`). Each beat starts at its source time; the picture
+freezes if the narrator needs longer. TTS runs in the env named by `KOKORO_PY` (needs `kokoro`, `soundfile`).
 
 ### Video 7: training in Isaac Lab
 
@@ -56,6 +75,7 @@ One PowerPoint deck per topic, each with the captioned video embedded, screensho
 | Topic | Deck |
 |---|---|
 | 3 Kinematics | [slides/Topic03_Kinematics.pptx](slides/Topic03_Kinematics.pptx) |
+| 4 Dynamics | [slides/Topic04_Dynamics.pptx](slides/Topic04_Dynamics.pptx) |
 | 7 Collision & planning | [slides/Topic07_Collision_Planning.pptx](slides/Topic07_Collision_Planning.pptx) |
 | 9 Contact & friction | [slides/Topic09_Contact_Friction.pptx](slides/Topic09_Contact_Friction.pptx) |
 | 14 Learned policies | [slides/Topic14_Learned_Policies.pptx](slides/Topic14_Learned_Policies.pptx) |

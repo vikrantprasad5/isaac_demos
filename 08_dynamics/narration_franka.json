@@ -1,0 +1,9 @@
+{"voice": "am_michael", "speed": 1.0, "beats": [
+ {"at": 0.0, "text": "This is a seven joint Franka arm in Isaac Sim. Its position controllers are switched off: we command raw motor torques."},
+ {"at": 0.0, "text": "First, zero torque. That is pure forward dynamics: the simulator solves the equation of motion, and gravity pulls the arm down."},
+ {"at": 8.3, "text": "Now we ask the simulator for g of q, the gravity term, and apply exactly that."},
+ {"at": 11.5, "text": "Nothing holds the joint angles, yet the arm floats. The shoulder needs about thirty four newton metres just to hold itself up."},
+ {"at": 20.3, "text": "Finally, full inverse dynamics. We want a wave on four joints, so every step we compute mass matrix times acceleration, plus Coriolis, plus gravity."},
+ {"at": 32.5, "text": "The shoulder torque is almost all gravity."},
+ {"at": 35.8, "text": "The base joint spins about a vertical axis, so its gravity term is zero. Everything it needs is inertia."}
+]}

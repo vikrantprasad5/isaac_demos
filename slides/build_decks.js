@@ -222,6 +222,7 @@ async function finish(deck, file) {
 const im = (f) => path.join(IMG, f);
 const web = (f) => path.join(IMG, "web", f);
 const vid = (f) => path.join(ROOT, "videos", "edited", f);
+const narrated = (f) => path.join(ROOT, "videos", "narrated", f);  // voice-over + captions
 
 // ================================================================ Topic 3
 async function topic3() {
@@ -303,6 +304,162 @@ async function topic3() {
   });
 
   await finish(deck, "Topic03_Kinematics.pptx");
+}
+
+// ================================================================ Topic 4
+async function eqImg(slide, file, x, y, h, extra = {}) {
+  const m = await sharp(file).metadata();
+  const w = (h * m.width) / m.height;
+  slide.addImage({ path: file, x: extra.center ? x - w / 2 : x, y, w, h, objectName: extra.name || "Equation" });
+  return w;
+}
+
+async function topic4() {
+  const deck = newDeck({ title: "Topic 4 · Robot Dynamics" });
+  const { pres, C } = deck;
+
+  pres.addSection({ title: "Intro" });
+  titleSlide(deck, null, {
+    section: "Intro", kicker: "TOPIC 4", title: "Robot Dynamics",
+    sub: "Forward and inverse dynamics: from torques to motion, and back", image: im("dyn_hover.jpg"),
+    notes: "Kinematics told us WHERE the joints must be. Dynamics asks HOW HARD the motors must work to get there, and what happens when forces act on the robot. This arm is floating with no position control at all: its motors give exactly the torque that cancels gravity. By the end you will know how that torque is computed.",
+  });
+
+  pres.addSection({ title: "Concept" });
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Concept" });
+    slide.addText("Kinematics said where. Dynamics says how hard", { placeholder: "title" });
+    const card = (y, head, body, color) => {
+      slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.6, y, w: 6.4, h: 1.25, rectRadius: 0.15, fill: { color: C.background2 }, line: { type: "none" } });
+      slide.addText([{ text: head, options: { bold: true, fontSize: 20, color, breakLine: true } }, { text: body, options: { fontSize: 16, color: C.text1 } }],
+        { x: 0.9, y, w: 5.9, h: 1.25, margin: 0, valign: "middle", isTextBox: true });
+    };
+    card(1.55, "Kinematics (topic 3)", "joint angles ↔ hand position. Pure geometry, no mass, no forces", C.accent5);
+    card(2.95, "Dynamics (today)", "torques ↔ motion. Mass, inertia, gravity and the motors' effort", C.accent3);
+    slide.addText("One joint: Newton's second law, for rotation", { x: 0.6, y: 4.5, w: 6.4, h: 0.4, fontSize: 16, bold: true, color: C.accent5, margin: 0, isTextBox: true });
+    await eqImg(slide, im("eq_pendulum.png"), 0.6, 5.0, 0.62, { name: "Pendulum equation" });
+    slide.addText("inertia × angular acceleration  +  gravity torque  =  motor torque", { x: 0.6, y: 5.8, w: 6.4, h: 0.4, fontSize: 14, color: C.accent5, margin: 0, isTextBox: true });
+    pic(slide, im("dyn_fall.jpg"), 7.5, 1.55, 5.23, 3.2, { objectName: "Arm collapsed with motors off" });
+    slide.addText("Motors off (τ = 0): gravity wins", { x: 7.5, y: 4.9, w: 5.23, h: 0.4, fontSize: 16, bold: true, color: C.text1, margin: 0, isTextBox: true });
+    slide.addNotes("Kinematics only dealt with geometry: which joint angles put the hand where. It never asked whether the motors are strong enough, or what happens if they switch off. Dynamics adds mass and forces. For a single joint it is just Newton's F = m a for rotation: the inertia times the angular acceleration, plus the torque gravity creates, equals the torque the motor applies. Switch the motor off, tau becomes zero, and gravity alone decides the motion: the arm on the right collapsed to the floor.");
+  }
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Concept" });
+    slide.addText("The equation of motion", { placeholder: "title" });
+    await eqImg(slide, im("eq_motion.png"), W / 2, 1.65, 0.95, { center: true, name: "Equation of motion" });
+    const terms = [
+      ["Inertia", "M(q) q̈", "Mass matrix × joint accelerations. M changes with the arm's pose", C.accent2],
+      ["Coriolis & centrifugal", "C(q, q̇) q̇", "Appear when several joints move at once; grow with speed²", C.accent6],
+      ["Gravity", "g(q)", "Torque needed just to hold the arm up. Depends on pose only", C.accent4],
+      ["Motor torques", "τ", "What the actuators apply: one number per joint", C.accent3],
+    ];
+    const cw = 2.85, gap = 0.243;
+    terms.forEach(([name, sym, desc, color], i) => {
+      const x = 0.6 + i * (cw + gap);
+      slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 3.05, w: cw, h: 2.75, rectRadius: 0.15, fill: { color: C.background2 }, line: { color, width: 2.5 }, objectName: name + " card" });
+      slide.addText(sym, { x: x + 0.25, y: 3.25, w: cw - 0.5, h: 0.6, fontSize: 26, bold: true, color, margin: 0, isTextBox: true, fontFace: "Cambria" });
+      slide.addText(name, { x: x + 0.25, y: 3.9, w: cw - 0.5, h: 0.7, valign: "top", fontSize: 18, bold: true, color: C.text1, margin: 0, isTextBox: true });
+      slide.addText(desc, { x: x + 0.25, y: 4.7, w: cw - 0.5, h: 1.0, fontSize: 15, color: C.text1, margin: 0, valign: "top", isTextBox: true });
+    });
+    slide.addText("q = joint angles, q̇ = velocities, q̈ = accelerations. One row per joint: 2 for our 2-link arm, 7 for the Franka, 30+ for a humanoid", { x: 0.6, y: 6.05, w: 12.13, h: 0.5, fontSize: 14, color: C.accent5, margin: 0, isTextBox: true });
+    slide.addNotes("This is the same F = m a, written for a whole robot. q is the list of joint angles, one per joint. Read it left to right. Inertia: the mass matrix times the joint accelerations; the matrix depends on the pose, because a stretched-out arm is harder to swing than a folded one. Coriolis and centrifugal terms: extra forces that appear when several joints move at the same time; they grow with speed squared, so they matter in fast moves. Gravity: the torque needed just to hold the arm still in a pose. On the right, tau: what the motors apply. Every robot simulator and every torque controller is built on this one line.");
+  }
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Concept" });
+    slide.addText("One equation, two questions", { placeholder: "title" });
+    const bx = (x, y, w, label, sub, fill, tc) => {
+      slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 1.2, rectRadius: 0.15, fill: { color: fill }, line: { type: "none" } });
+      slide.addText([{ text: label, options: { bold: true, fontSize: 20, color: tc, breakLine: true } }, { text: sub, options: { fontSize: 14, color: tc } }],
+        { x, y, w, h: 1.2, align: "center", valign: "middle", margin: 0.05, isTextBox: true });
+    };
+    const row = async (y, title, question, color, a, eqFile, b, users) => {
+      slide.addText([{ text: title + "   ", options: { bold: true, color } }, { text: question, options: { color: C.text1 } }],
+        { x: 0.6, y, w: 12.13, h: 0.45, fontSize: 20, margin: 0, isTextBox: true });
+      bx(0.6, y + 0.6, 2.4, a[0], a[1], C.background2, C.text1);
+      arrow(deck, slide, 3.1, y + 1.2, 3.6, y + 1.2, color, 4);
+      slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 3.7, y: y + 0.6, w: 4.4, h: 1.2, rectRadius: 0.15, fill: { color: C.text2 }, line: { type: "none" } });
+      await eqImg(slide, eqFile, 5.9, y + 0.95, 0.5, { center: true });
+      arrow(deck, slide, 8.2, y + 1.2, 8.7, y + 1.2, color, 4);
+      bx(8.8, y + 0.6, 2.2, b[0], b[1], C.background2, C.text1);
+      slide.addText([{ text: "Used by", options: { fontSize: 13, color: C.accent5, breakLine: true } }, { text: users, options: { fontSize: 14, color: C.text1 } }],
+        { x: 11.2, y: y + 0.6, w: 1.6, h: 1.2, margin: 0, valign: "middle", isTextBox: true });
+    };
+    await row(1.5, "Forward dynamics", "Given these torques, how will the robot move?", C.accent2,
+      ["Torques τ", "what we apply"], im("eq_forward_w.png"), ["Motion", "integrate q̈ → q̇ → q"], "simulators like Isaac Sim");
+    await row(3.75, "Inverse dynamics", "To move like this, what torques do I need?", C.accent3,
+      ["Motion", "q, q̇, q̈ wanted"], im("eq_inverse_w.png"), ["Torques τ", "for the motors"], "controllers, motor sizing");
+    slide.addText("Forward: solve and integrate, step after step.  Inverse: one direct evaluation, fast enough for 1 kHz control loops", { x: 0.6, y: 6.1, w: 12.13, h: 0.45, fontSize: 15, color: C.accent5, margin: 0, isTextBox: true });
+    slide.addNotes("Exactly like kinematics, dynamics comes in two directions, and it is the same equation read two ways. Forward dynamics: we know the torques and ask how the robot will move. Solve the equation for the accelerations, then integrate over time to get velocities and angles. That is what a physics simulator such as Isaac Sim's PhysX does thousands of times a second. Inverse dynamics: we know the motion we want, the angles, velocities and accelerations, and ask which torques produce it. Just plug in and multiply, no integration. That is what a torque controller does every millisecond, and what engineers use to size motors.");
+  }
+
+  pres.addSection({ title: "Demo" });
+  await videoSlide(deck, {
+    section: "Demo", title: "The maths, animated", video: narrated("08a_dynamics_math.mp4"), cover: im("cover_08a_dynamics_math.jpg"),
+    captions: [[0, "One joint: F = m a"], [26, "Equation, term by term"], [58, "Forward vs inverse"], [86, "Forward: motors off, it falls"], [112, "Inverse: torques for a circle"], [129, "2× speed: inertia ×4"], [146, "The control loop"]],
+    notes: "This animation walks through the maths on a two-joint arm simulated with exactly the equation on the previous slides. First a pendulum, then the full equation term by term. In the forward-dynamics part the motors are off: the simulator only solves for the acceleration and integrates, and the arm falls and swings chaotically. In the inverse part we ask for a circle and compute the torques; the bar chart shows each term. Watch what happens when the circle speeds up: the inertia torque roughly quadruples, while the gravity torque stays the same because it depends only on the pose.",
+  });
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Demo" });
+    slide.addText("Faster moves cost more", { placeholder: "title" });
+    pic(slide, im("dyn_math_inverse.jpg"), 0.6, 1.55, 7.6, 4.28, { objectName: "Inverse dynamics animation frame" });
+    bigStat(deck, slide, { x: 8.7, y: 1.55, w: 4.0, value: "2× speed", label: "around the same circle", color: C.accent2 });
+    bigStat(deck, slide, { x: 8.7, y: 3.75, w: 4.0, value: "≈ 4×", label: "the inertia torque (q̈ grows with speed²); gravity torque unchanged", color: C.accent3 });
+    slide.addNotes("Acceleration around a circle grows with the square of the speed, so doubling the speed needs about four times the inertia torque. Gravity torque depends only on where the arm is, not how fast it moves, so it does not change. This is why fast robots need bigger motors and why motion planners limit acceleration.");
+  }
+
+  await videoSlide(deck, {
+    section: "Demo", title: "Demo: torque-controlled Franka in Isaac Sim", video: narrated("08b_dynamics_franka.mp4"), cover: im("cover_08b_dynamics_franka.jpg"),
+    captions: [[9, "τ = 0: forward dynamics, it falls"], [19, "τ = g(q): it floats"], [36, "Computed torque: tracks a wave"], [52, "Base joint: inertia only"]],
+    notes: "Now the real 7-joint Franka model in Isaac Sim. We switched off its position controllers and command raw motor torques every 1/120 s. Take one: zero torque. PhysX does forward dynamics and the arm collapses. Take two: we ask Isaac Sim for g(q), the gravity term of the equation, and apply exactly that. Nothing holds the angles in place, yet the arm floats: the shoulder needs about 34 newton-metres. Take three: the full inverse dynamics, computed-torque control, follows a wave on four joints. The plots show the shoulder torque is almost all gravity, while the base joint, which rotates about a vertical axis, has zero gravity torque: everything it needs is inertia.",
+  });
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Demo" });
+    slide.addText("Three torque commands, three outcomes", { placeholder: "title" });
+    strip(deck, slide, [
+      { img: im("dyn_fall.jpg"), label: "τ = 0", sub: "Forward dynamics: falls", accent: C.accent3 },
+      { img: im("dyn_hover.jpg"), label: "τ = g(q)", sub: "Holds still: floats", accent: C.accent4 },
+      { img: im("dyn_track.jpg"), label: "τ = M q̈ + C q̇ + g", sub: "Follows the wave", accent: C.accent2 },
+    ], { y: 1.55, h: 3.7 });
+    slide.addNotes("Same robot, same simulator, only the torque formula changes. With zero torque the simulator's forward dynamics lets it fall. With the gravity term it holds any pose: the joint angles drifted less than 0.2 degrees in twelve seconds. With the full inverse dynamics plus a little feedback it follows the desired motion, within about 4 degrees at the fastest moments.");
+  }
+
+  pres.addSection({ title: "Wrap-up" });
+  {
+    const slide = pres.addSlide({ masterName: "Content Dark", sectionTitle: "Wrap-up" });
+    slide.addText("Both directions, in one loop", { placeholder: "title" });
+    const node = (x, w, head, sub, color) => {
+      slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 1.9, w, h: 1.6, rectRadius: 0.15, fill: { color: "1E2A3D" }, line: { color, width: 2.5 } });
+      slide.addText([{ text: head, options: { bold: true, fontSize: 20, color, breakLine: true } }, { text: sub, options: { fontSize: 15, color: C.background2 } }],
+        { x, y: 1.9, w, h: 1.6, align: "center", valign: "middle", margin: 0.1, isTextBox: true });
+    };
+    node(0.6, 3.0, "Desired motion", "q, q̇, q̈ from the planner", C.accent1);
+    arrow(deck, slide, 3.7, 2.7, 4.4, 2.7, C.background2, 3);
+    node(4.5, 3.7, "Controller", "inverse dynamics: motion → τ", C.accent3);
+    arrow(deck, slide, 8.3, 2.7, 9.0, 2.7, C.accent3, 3);
+    node(9.1, 3.63, "Robot / simulator", "forward dynamics: τ → motion", C.accent2);
+    slide.addText("sensors measure q, q̇ and send them back to the controller", { x: 4.5, y: 3.7, w: 8.23, h: 0.4, fontSize: 15, color: C.accent5, margin: 0, isTextBox: true, align: "right" });
+    const cards = [
+      ["FaHandPaper", "Gravity compensation", "τ = g(q): cobots feel weightless to hand-guide"],
+      ["FaTachometerAlt", "Fast moves cost more", "Inertia torque grows with acceleration"],
+    ];
+    for (let i = 0; i < cards.length; i++) {
+      const [ic, t, s] = cards[i];
+      await iconBox(deck, slide, { x: 0.6 + i * 6.23, y: 4.5, w: 5.9, h: 1.8, iconName: ic, title: t, sub: s, fill: "1E2A3D", titleColor: C.background1 });
+    }
+    slide.addNotes("In a real robot both directions run together. The planner says what motion we want. The controller uses inverse dynamics to turn it into torques. The robot, or the simulator standing in for it, is forward dynamics: physics answering back with the actual motion. Sensors close the loop. Two practical consequences: gravity compensation lets collaborative robots feel weightless so people can push them around by hand, and fast moves need disproportionately more torque.");
+  }
+
+  titleSlide(deck, null, {
+    section: "Wrap-up", kicker: "TAKEAWAY", title: "Forward: torques → motion. Inverse: motion → torques",
+    sub: "Simulators run forward dynamics; controllers run inverse dynamics.", image: im("dyn_track.jpg"),
+    notes: "Recap: one equation of motion, read two ways. Forward dynamics predicts motion from torques, which is what Isaac Sim does. Inverse dynamics computes the torques a motion needs, which is what controllers do. Next, contact: what happens when the robot touches the world.",
+  });
+
+  await finish(deck, "Topic04_Dynamics.pptx");
 }
 
 // ================================================================ Topic 7
@@ -485,6 +642,29 @@ async function topic9() {
     slide.addNotes("Squeeze is shown as a percentage of the hand's full grip. The robot hand is far stronger than this light rod needs, so it holds until the squeeze is almost gone. Then friction (mu times squeeze) drops below the weight and the rod slides. The topic 3 Franka demo changed friction; this one changes squeeze. Both are terms of the same equation.");
   }
 
+  await videoSlide(deck, {
+    section: "Demo", title: "Demo: pushing on rough vs smooth", video: narrated("09_friction_push.mp4"), cover: im("cover_09_friction_push.jpg"),
+    captions: [[0, "Same block, same push"], [11, "Rough: big, bumpy force"], [17, "Smooth: tiny, steady force"], [27, "Effort and bumpiness compared"], [38, "Stick-slip"]],
+    notes: "Now friction working against the robot. The Franka pushes the same 2 kg block along the same path at the same speed, on two mats: rough, like rubber (mu about 1.0 static, 0.6 sliding), and smooth, like ice or a polished, oily surface (mu about 0.04). The graph is the force the fingers measure on the block, straight from the physics engine. On the rough mat the robot needs about 14 newtons, and the force chatters by about plus or minus 1.7 newtons as the surfaces grip and let go. On the smooth mat it needs well under 1 newton, and the curve is flat.",
+  });
+
+  {
+    const slide = pres.addSlide({ masterName: "Content", sectionTitle: "Demo" });
+    slide.addText("Rough costs effort, and it's bumpy", { placeholder: "title" });
+    pic(slide, im("t9_push_rough.jpg"), 0.6, 1.55, 3.9, 2.2, { objectName: "Rough mat push" });
+    pic(slide, im("t9_push_smooth.jpg"), 0.6, 4.05, 3.9, 2.2, { objectName: "Smooth mat push" });
+    slide.addText("Rough", { x: 4.8, y: 1.6, w: 2.2, h: 0.45, fontSize: 20, bold: true, color: C.accent3, margin: 0, isTextBox: true });
+    slide.addText("Smooth", { x: 4.8, y: 4.1, w: 2.2, h: 0.45, fontSize: 20, bold: true, color: C.accent2, margin: 0, isTextBox: true });
+    bigStat(deck, slide, { x: 4.8, y: 1.95, w: 3.6, value: "13.6 N", label: "push force, ripple ± 1.7 N", color: C.accent3 });
+    bigStat(deck, slide, { x: 4.8, y: 4.45, w: 3.6, value: "0.65 N", label: "push force, ripple ± 0.01 N", color: C.accent2 });
+    slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 8.9, y: 1.55, w: 3.83, h: 4.7, rectRadius: 0.15, fill: { color: C.text2 }, line: { type: "none" } });
+    slide.addText("Sliding friction", { x: 9.2, y: 1.85, w: 3.3, h: 0.45, fontSize: 20, bold: true, color: C.accent1, margin: 0, isTextBox: true });
+    slide.addText("push ≈ μ × N", { x: 9.2, y: 2.4, w: 3.3, h: 0.8, fontSize: 32, bold: true, color: C.background1, margin: 0, isTextBox: true, fontFace: THEME.headFontFace });
+    slide.addText("N ≈ the block's weight. Same block, so effort scales with μ: about 21× more on the rough mat", { x: 9.2, y: 3.35, w: 3.3, h: 1.5, fontSize: 16, color: C.background2, margin: 0, valign: "top", isTextBox: true });
+    slide.addText("Bumpiness: grip, let go, grip again (stick-slip)", { x: 9.2, y: 5.0, w: 3.3, h: 1.0, fontSize: 16, color: C.background2, margin: 0, valign: "top", isTextBox: true });
+    slide.addNotes("Numbers measured in the simulation while the block was sliding. Sliding friction is roughly mu times the normal force, and the normal force is about the block's weight, 20 newtons, plus a little from the fingers pressing down. With mu 0.6 that is around 12 to 15 newtons; with mu 0.03 it is well under one. The rough surface also makes the force ripple: tiny moments of sticking and releasing, called stick-slip. That's the bumpiness you would feel pushing a box across rubber or carpet, versus gliding it on ice. For a robot: more motor effort, more vibration, and harder force control.");
+  }
+
   pres.addSection({ title: "Wrap-up" });
   {
     const slide = pres.addSlide({ masterName: "Content Dark", sectionTitle: "Wrap-up" });
@@ -632,6 +812,7 @@ async function topic14() {
 
 (async () => {
   await topic3();
+  await topic4();
   await topic7();
   await topic9();
   await topic14();

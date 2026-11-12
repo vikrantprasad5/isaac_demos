@@ -1,0 +1,9 @@
+{"voice": "am_michael", "speed": 1.0, "beats": [
+ {"at": 0.0, "text": "Same robot, same two kilogram block, same push. Only the surface changes."},
+ {"at": 1.0, "text": "Left: a rough, rubbery mat. Right: a smooth one, like ice."},
+ {"at": 4.9, "text": "Watch the force graph. Rough: about fourteen newtons, and bumpy."},
+ {"at": 8.4, "text": "Smooth: under one newton, and flat."},
+ {"at": 19.3, "text": "Sliding friction is roughly mu times the normal force. Same block, so the effort scales with mu: about twenty times more on the rough surface."},
+ {"at": 19.3, "text": "The bumps come from stick slip: the surfaces grip, let go, and grip again."},
+ {"at": 19.3, "text": "For a robot, that means more motor effort, more vibration, and harder force control."}
+]}
