@@ -60,7 +60,11 @@ function fmt(t) {
 }
 
 // ---------------------------------------------------------------- deck setup
+let SHARED = null;  // set when building the combined deck: every topic adds its slides to it
+let PREFIX = "";     // section-name prefix in the combined deck, e.g. "Topic 4 · "
+
 function newDeck(topic) {
+  if (SHARED) return SHARED;
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE";
   pres.author = "Talk 03";
@@ -213,6 +217,7 @@ function bigStat(deck, slide, { x, y, w, value, label, color }) {
 }
 
 async function finish(deck, file) {
+  if (SHARED) return;
   const out = path.join(OUT, file);
   await deck.pres.writeFile({ fileName: out });
   await applyTheme(out, THEME);
@@ -810,10 +815,41 @@ async function topic14() {
   await finish(deck, "Topic14_Learned_Policies.pptx");
 }
 
+// ================================================================ combined deck: all topics in one file
+async function combined() {
+  const deck = newDeck({ title: "Talk 03 · Manipulation and Contact" });
+  const { pres } = deck;
+  const addSection = pres.addSection.bind(pres);
+  const addSlide = pres.addSlide.bind(pres);
+  pres.addSection = (o) => addSection({ ...o, title: PREFIX + o.title });
+  pres.addSlide = (o = {}) => addSlide({ ...o, sectionTitle: o.sectionTitle && PREFIX + o.sectionTitle });
+  SHARED = deck;
+
+  PREFIX = "";
+  pres.addSection({ title: "Talk 03" });
+  titleSlide(deck, null, {
+    section: "Talk 03", kicker: "TALK 03", title: "Manipulation and Contact",
+    sub: "Kinematics · Dynamics · Collision-free planning · Contact & friction · Learned policies",
+    image: im("dyn_hover.jpg"),
+    notes: "Five topics, each with an Isaac Sim demo: kinematics (where the joints go), dynamics (how hard the motors work), collision-free planning, contact and friction, and learned policies.",
+  });
+  for (const [prefix, build] of [["Topic 3 · ", topic3], ["Topic 4 · ", topic4], ["Topic 7 · ", topic7],
+                                 ["Topic 9 · ", topic9], ["Topic 14 · ", topic14]]) {
+    PREFIX = prefix;
+    await build();
+  }
+  SHARED = null;
+  await finish(deck, "Talk03_Manipulation_and_Contact.pptx");
+}
+
 (async () => {
-  await topic3();
-  await topic4();
-  await topic7();
-  await topic9();
-  await topic14();
+  const only = process.argv[2];  // "combined" builds just the combined deck
+  if (only !== "combined") {
+    await topic3();
+    await topic4();
+    await topic7();
+    await topic9();
+    await topic14();
+  }
+  await combined();
 })().catch((e) => { console.error(e); process.exit(1); });
